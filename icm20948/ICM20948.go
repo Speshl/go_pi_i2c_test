@@ -49,7 +49,7 @@ func (d *Dev) ReadGyro() error {
 }
 
 func (d *Dev) Check() (bool, error) {
-	buffer := make([]byte, 0)
+	buffer := make([]byte, 1)
 	err := d.readRegister(REG_ADD_WIA, buffer)
 	if err != nil {
 		return false, err
