@@ -8,7 +8,7 @@ import (
 	"periph.io/x/host/v3"
 )
 
-const ICM20948_Address = 0x68
+const ICM20948_Address uint16 = 0x68
 
 func main() {
 	// Load all the drivers:
