@@ -3,6 +3,7 @@ package icm20948
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"periph.io/x/conn/v3"
 	"periph.io/x/conn/v3/i2c"
@@ -34,8 +35,88 @@ func (d *Dev) makeDev(opts *Opts) error {
 	if err != nil {
 		return err
 	}
+	if !ok {
+		return fmt.Errorf("device return false for check")
+	}
 
-	log.Printf("Check was %t\n", ok)
+	time.Sleep(500 * time.Millisecond)
+	//user bank 0 register
+	err = d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0})
+	if err != nil {
+		return err
+	}
+
+	err = d.writeCommands([]byte{REG_ADD_PWR_MIGMT_1, REG_VAL_ALL_RGE_RESET})
+	if err != nil {
+		return err
+	}
+
+	time.Sleep(100 * time.Millisecond)
+
+	err = d.writeCommands([]byte{REG_ADD_PWR_MIGMT_1, REG_VAL_RUN_MODE})
+	if err != nil {
+		return err
+	}
+	//user bank 2 register
+	err = d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_2})
+	if err != nil {
+		return err
+	}
+
+	err = d.writeCommands([]byte{REG_ADD_GYRO_SMPLRT_DIV, 0x07})
+	if err != nil {
+		return err
+	}
+
+	err = d.writeCommands([]byte{REG_ADD_GYRO_CONFIG_1, REG_VAL_BIT_GYRO_DLPCFG_6 | REG_VAL_BIT_GYRO_FS_1000DPS | REG_VAL_BIT_GYRO_DLPF})
+	if err != nil {
+		return err
+	}
+
+	err = d.writeCommands([]byte{REG_ADD_ACCEL_SMPLRT_DIV_2, 0x07})
+	if err != nil {
+		return err
+	}
+
+	err = d.writeCommands([]byte{REG_ADD_ACCEL_CONFIG, REG_VAL_BIT_ACCEL_DLPCFG_6 | REG_VAL_BIT_ACCEL_FS_2g | REG_VAL_BIT_ACCEL_DLPF})
+	if err != nil {
+		return err
+	}
+
+	//user bank 0 register
+	err = d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0})
+	if err != nil {
+		return err
+	}
+
+	time.Sleep(100 * time.Millisecond)
+
+	return nil
+}
+
+func (d *Dev) GyroOffset() error {
+	return d.GyroRead()
+}
+
+func (d *Dev) GyroRead() error {
+	err := d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0})
+	if err != nil {
+		return err
+	}
+
+	//read 12 bytes
+	buffer := make([]byte, 12)
+	err = d.readRegister(REG_ADD_ACCEL_XOUT_H, buffer)
+	if err != nil {
+		return err
+	}
+
+	err = d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_2})
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Read Gyro Bytes - %+v\n", buffer)
 
 	return nil
 }
