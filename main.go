@@ -20,7 +20,7 @@ func main() {
 	log.Printf("State Details: %+v\n\n", state)
 
 	// Open a handle to the first available I²C bus:
-	bus, err := i2creg.Open("") //Might need to specify a 1
+	bus, err := i2creg.Open("1") //Might need to specify a 1
 	if err != nil {
 		log.Fatalf("failed opening bus: %s", err)
 	}
