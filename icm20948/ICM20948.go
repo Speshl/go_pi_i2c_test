@@ -28,6 +28,8 @@ func NewI2C(b i2c.Bus, addr uint16, opts *Opts) (*Dev, error) {
 }
 
 func (d *Dev) makeDev(opts *Opts) error {
+	log.Printf("Device details: %s\n", d.device.String())
+
 	ok, err := d.Check()
 	if err != nil {
 		return err
