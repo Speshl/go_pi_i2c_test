@@ -91,14 +91,14 @@ func (d *Dev) makeDev(opts *Opts) error {
 
 	time.Sleep(100 * time.Millisecond)
 
-	return nil
+	return d.gyroOffset()
 }
 
-func (d *Dev) GyroOffset() error {
-	return d.GyroRead()
+func (d *Dev) gyroOffset() error {
+	return d.gyroRead()
 }
 
-func (d *Dev) GyroRead() error {
+func (d *Dev) gyroRead() error {
 	err := d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0})
 	if err != nil {
 		return err
