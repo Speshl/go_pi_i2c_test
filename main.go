@@ -14,24 +14,24 @@ func main() {
 	// Load all the drivers:
 	state, err := host.Init()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed initializing host: %s", err)
 	}
 
-	log.Printf("Bus Details: %+v\n", state)
+	log.Printf("State Details: %+v\n\n", state)
 
 	// Open a handle to the first available I²C bus:
 	bus, err := i2creg.Open("") //Might need to specify a 1
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed opening bus: %s", err)
 	}
 	defer bus.Close()
 
-	log.Printf("Bus Details: %s\n", bus.String())
+	log.Printf("Bus Details: %s\n\n", bus.String())
 
 	// Open a handle to device on the I²C bus
 	dev, err := icm20948.NewI2C(bus, ICM20948_Address, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed creating icm20948 device: %s", err)
 	}
 	defer dev.Halt()
 
