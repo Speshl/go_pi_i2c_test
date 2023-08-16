@@ -32,11 +32,20 @@ func main() {
 	// Angle in degrees. Must be in the range `0` to `Range`
 	for i := 0; i < 130; i++ {
 		servo0.Angle(i)
-		time.Sleep(10 * time.Millisecond)
+		log.Printf("Servo0 - Angle - %d\n", i)
+		time.Sleep(1000 * time.Millisecond)
 	}
 
 	// Fraction as pulse width expressed between 0.0 `MinPulse` and 1.0 `MaxPulse`
+	log.Println("Servo - Fraction - 0.0")
+	servo0.Fraction(0.0)
+	time.Sleep(10 * time.Second)
+	log.Println("Servo - Fraction - 0.5")
 	servo0.Fraction(0.5)
+	time.Sleep(10 * time.Second)
+	log.Println("Servo - Fraction - 1.0")
+	servo0.Fraction(1.0)
+	time.Sleep(10 * time.Second)
 	// // Load all the drivers:
 	// state, err := host.Init()
 	// if err != nil {
