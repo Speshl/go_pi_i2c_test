@@ -24,20 +24,22 @@ func main() {
 	}
 
 	// Sets a single PWM channel 0
-	pca0.SetChannel(0, 0, 255)
+	pca0.SetChannel(0, 0, 130)
 
 	// Servo on channel 0
-	servo0 := pca0.ServoNew(0, &pca9685.ServOptions{
-		AcRange:  255,
-		MinPulse: pca9685.ServoMinPulseDef,
-		MaxPulse: pca9685.DefaultPWMFrequency,
-	})
+	servo0 := pca0.ServoNew(0, nil)
 
 	// Angle in degrees. Must be in the range `0` to `Range`
-	for i := 0; i < 255; i++ {
+	for i := 0; i < 130; i++ {
 		servo0.Angle(i)
 		log.Printf("Servo0 - Angle - %d\n", i)
 		time.Sleep(100 * time.Millisecond)
+	}
+
+	for i := 0; i < 1000; i++ {
+		servo0.Fraction(float32(i) / 1000)
+		log.Printf("Servo0 - fraction - %f\n", float32(i)/1000)
+		time.Sleep(500 * time.Millisecond)
 	}
 
 	// Fraction as pulse width expressed between 0.0 `MinPulse` and 1.0 `MaxPulse`
