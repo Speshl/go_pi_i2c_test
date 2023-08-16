@@ -39,9 +39,9 @@ func (d *Dev) makeDev(opts *Opts) error {
 	if err != nil {
 		return err
 	}
-	if !ok {
-		return fmt.Errorf("device return false for check")
-	}
+	// if !ok {
+	// 	return fmt.Errorf("device return false for check")
+	// }
 
 	time.Sleep(500 * time.Millisecond)
 	//user bank 0 register
