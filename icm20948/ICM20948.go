@@ -146,8 +146,8 @@ func (d *Dev) gyroRead() ([]int, []int, error) {
 	gyro[1] = int(int(buffer[8])<<8) | int(buffer[9]) - d.gyroOffsetY
 	gyro[2] = int(int(buffer[10])<<8) | int(buffer[11]) - d.gyroOffsetZ
 
-	fmt.Printf("Read Accel: %+v", accel)
-	fmt.Printf("Read Gyro: %+v", gyro)
+	fmt.Printf("Read Accel: %+v\n", accel)
+	fmt.Printf("Read Gyro: %+v\n\n", gyro)
 
 	return accel, gyro, nil
 }
