@@ -39,7 +39,7 @@ func main() {
 	for i := 0; i < 1000; i++ {
 		servo0.Fraction(float32(i) / 1000)
 		log.Printf("Servo0 - fraction - %f\n", float32(i)/1000)
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	// Fraction as pulse width expressed between 0.0 `MinPulse` and 1.0 `MaxPulse`
