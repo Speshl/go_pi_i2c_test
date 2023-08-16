@@ -13,6 +13,10 @@ type Dev struct {
 	device  conn.Conn
 	options *Opts
 
+	gyroOffsetX int
+	gyroOffsetY int
+	gyroOffsetZ int
+
 	name string
 	os   uint8
 }
@@ -95,30 +99,58 @@ func (d *Dev) makeDev(opts *Opts) error {
 }
 
 func (d *Dev) gyroOffset() error {
-	return d.gyroRead()
+	gx := 0
+	gy := 0
+	gz := 0
+	for i := 0; i < 32; i++ {
+		_, gyro, err := d.gyroRead()
+		if err != nil {
+			return err
+		}
+		gx = gyro[0]
+		gy = gyro[1]
+		gz = gyro[2]
+	}
+	d.gyroOffsetX = gx >> 5
+	d.gyroOffsetY = gy >> 5
+	d.gyroOffsetZ = gz >> 5
+	return nil
 }
 
-func (d *Dev) gyroRead() error {
+func (d *Dev) gyroRead() ([]int, []int, error) {
 	err := d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0})
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	//read 12 bytes
 	buffer := make([]byte, 12)
 	err = d.readRegister(REG_ADD_ACCEL_XOUT_H, buffer)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	err = d.writeCommands([]byte{REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_2})
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	log.Printf("Read Gyro Bytes - %+v\n", buffer)
+	accel := make([]int, 3)
+	gyro := make([]int, 3)
 
-	return nil
+	accel[0] = int((buffer[0] << 8) | buffer[1])
+	accel[1] = int((buffer[2] << 8) | buffer[3])
+	accel[2] = int((buffer[4] << 8) | buffer[5])
+
+	gyro[0] = int((buffer[6]<<8)|buffer[7]) - d.gyroOffsetX
+	gyro[1] = int((buffer[8]<<8)|buffer[9]) - d.gyroOffsetY
+	gyro[2] = int((buffer[10]<<8)|buffer[11]) - d.gyroOffsetZ
+
+	fmt.Printf("Read Accel: %+v", accel)
+	fmt.Printf("Read Gyro: %+v", gyro)
+
+	return accel, gyro, nil
 }
 
 func (d *Dev) Halt() error {
