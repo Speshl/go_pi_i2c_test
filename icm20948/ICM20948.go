@@ -135,17 +135,16 @@ func (d *Dev) gyroRead() ([]int, []int, error) {
 		return nil, nil, err
 	}
 
-	log.Printf("Read Gyro Bytes - %+v\n", buffer)
 	accel := make([]int, 3)
 	gyro := make([]int, 3)
 
-	accel[0] = int((buffer[0] << 8) | buffer[1])
-	accel[1] = int((buffer[2] << 8) | buffer[3])
-	accel[2] = int((buffer[4] << 8) | buffer[5])
+	accel[0] = int((int(buffer[0]) << 8) | int(buffer[1]))
+	accel[1] = int((int(buffer[2]) << 8) | int(buffer[3]))
+	accel[2] = int((int(buffer[4]) << 8) | int(buffer[5]))
 
-	gyro[0] = int((buffer[6]<<8)|buffer[7]) - d.gyroOffsetX
-	gyro[1] = int((buffer[8]<<8)|buffer[9]) - d.gyroOffsetY
-	gyro[2] = int((buffer[10]<<8)|buffer[11]) - d.gyroOffsetZ
+	gyro[0] = int(int(buffer[6])<<8) | int(buffer[7]) - d.gyroOffsetX
+	gyro[1] = int(int(buffer[8])<<8) | int(buffer[9]) - d.gyroOffsetY
+	gyro[2] = int(int(buffer[10])<<8) | int(buffer[11]) - d.gyroOffsetZ
 
 	fmt.Printf("Read Accel: %+v", accel)
 	fmt.Printf("Read Gyro: %+v", gyro)

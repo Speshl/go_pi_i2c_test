@@ -22,7 +22,7 @@ func main() {
 	// Open a handle to the first available I²C bus:
 	bus, err := i2creg.Open("/dev/i2c-1") //Might need to specify a 1
 	if err != nil {
-		log.Fatalf("failed opening bus: %s", err)
+		log.Fatalf("failed opening bus: %s\n", err)
 	}
 	defer bus.Close()
 
@@ -31,7 +31,7 @@ func main() {
 	// Open a handle to device on the I²C bus
 	dev, err := icm20948.NewI2C(bus, ICM20948_Address, nil)
 	if err != nil {
-		log.Fatalf("failed creating icm20948 device: %s", err)
+		log.Fatalf("failed creating icm20948 device: %s\n", err)
 	}
 	defer dev.Halt()
 
